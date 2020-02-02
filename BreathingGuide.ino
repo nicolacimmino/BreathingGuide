@@ -32,6 +32,7 @@
 #include "ModesChanger.h"
 #include "MemoryController.h"
 #include "BrightnessChanger.h"
+#include "Cli.h"
 
 #include <avr/sleep.h>
 
@@ -41,6 +42,7 @@ ControlButton controlButton;
 FloodLight floodLight;
 BatteryMonitor BatteryMonitor;
 MemoryController memoryController;
+Cli cli;
 
 uint8_t mode = 0;
 ModeExecutor *modeExecutors[] = {new SquareBreathModeExecutor(), new AlternateNostrilBreathModeExecutor(), new RainbowModeExecutor(), new PomodoroModeExecutor(), new NighlightModeExecutor()};
@@ -121,6 +123,7 @@ void setup()
 {
 
     Serial.begin(115200);
+    cli.begin(&Serial, &memoryController);
 
     pinMode(PIN_BTN_C, OUTPUT);
     digitalWrite(PIN_BTN_C, LOW);
@@ -157,6 +160,7 @@ void setup()
 
 void loop()
 {
+    cli.loop();
     accelerometer.loop();
     controlButton.loop();
     modesChanger.loop();
