@@ -15,24 +15,24 @@
 //    along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include "hardware.h"
-#include "Accelerometer.h"
-#include "LEDBarController.h"
-#include "ControlButton.h"
-#include "FloodLight.h"
-#include "BatteryMonitor.h"
+#include "src/hardware.h"
+#include "src/Devices/Accelerometer.h"
+#include "src/Devices/LEDBarController.h"
+#include "src/Devices/ControlButton.h"
+#include "src/Devices/FloodLight.h"
+#include "src/Devices/BatteryMonitor.h"
 
 #define EXECUTORS_COUNT 5
-#include "ModeExecutor.h"
-#include "SquareBreathModeExecutor.h"
-#include "AlternateNostrilBreathModeExecutor.h"
-#include "RainbowModeExecutor.h"
-#include "PomodoroModeExecutor.h"
-#include "NightlightModeExecutor.h"
-#include "ModesChanger.h"
-#include "MemoryController.h"
-#include "BrightnessChanger.h"
-#include "Cli.h"
+#include "src/ModeExecutors/ModeExecutor.h"
+#include "src/ModeExecutors/SquareBreathModeExecutor.h"
+#include "src/ModeExecutors/AlternateNostrilBreathModeExecutor.h"
+#include "src/ModeExecutors/RainbowModeExecutor.h"
+#include "src/ModeExecutors/PomodoroModeExecutor.h"
+#include "src/ModeExecutors/NightlightModeExecutor.h"
+#include "src/ModesChanger.h"
+#include "src/Devices/MemoryController.h"
+#include "src/BrightnessChanger.h"
+#include "src/Cli.h"
 
 #include <avr/sleep.h>
 

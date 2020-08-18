@@ -6,7 +6,7 @@
 #define CLI_INPUT_BUFFER_SIZE 1 + (CLI_MAX_ARGC * CLI_MAX_ARGLEN)
 
 #include "Arduino.h"
-#include "MemoryController.h"
+#include "Devices/MemoryController.h"
 
 class Cli
 {

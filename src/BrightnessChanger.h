@@ -2,9 +2,9 @@
 #define __BRIGHTNESSCHANGER_H__
 
 #include <Arduino.h>
-#include "FloodLight.h"
-#include "MemoryController.h"
-#include "Accelerometer.h"
+#include "Devices/FloodLight.h"
+#include "Devices/MemoryController.h"
+#include "Devices/Accelerometer.h"
 
 class BrightnessChanger
 {

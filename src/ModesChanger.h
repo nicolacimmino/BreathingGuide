@@ -2,8 +2,8 @@
 #define __MODESCHANGER_H__
 
 #include <Arduino.h>
-#include "FloodLight.h"
-#include "ModeExecutor.h"
+#include "Devices/FloodLight.h"
+#include "ModeExecutors/ModeExecutor.h"
 
 class ModesChanger
 {
