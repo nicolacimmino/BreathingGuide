@@ -2,6 +2,9 @@
 #define __ACCELEROMETER_H__
 
 #include <Arduino.h>
+#include <Adafruit_MPU6050.h>
+#include <Adafruit_Sensor.h>
+#include <Wire.h>
 
 #define X_AXIS 0
 #define Y_AXIS 1
@@ -15,8 +18,7 @@
 class Accelerometer
 {
 public:
-    void begin(uint8_t pinXAxes, uint8_t pinYAxes, uint8_t pinZAxes,
-               void (*onTilt)(uint8_t axis, bool positive) = NULL, void (*onShake)() = NULL, bool (*onRoll)(char *pattern) = NULL);
+    void begin(void (*onTilt)(uint8_t axis, bool positive) = NULL, void (*onShake)() = NULL, bool (*onRoll)(char *pattern) = NULL);
     int16_t getX();
     int16_t getY();
     int16_t getZ();
@@ -26,18 +28,18 @@ public:
     int16_t getAveragedZ();
 
 private:
-    uint8_t pinAxes[3];
+    Adafruit_MPU6050 *mpu;
     uint8_t axesStatus[3];
     int16_t getAxis(uint8_t axis);
-    int16_t calibationTable[6] = {
-        250, 730, // X min, max
-        300, 790, // Y min, max
-        190, 680  // Z min, max
+    float calibationTable[6] = {
+        -9.4, +9.8, // X min, max
+        -10, +9.8, // Y min, max
+        -10.6, +8.7  // Z min, max
     };
-    int16_t calibationTableAxisShake[6] = {
-        80, 1000, // X min, max
-        80, 1000, // Y min, max
-        80, 1000  // Z min, max
+    float calibationTableAxisShake[6] = {
+        -18.4, +18, // X min, max
+        -18, +18, // Y min, max
+        -18, +18  // Z min, max
     };
     int16_t averagedAxis[3] = {0, 0, 0};
     uint32_t movingAverageSampleTime = 0;

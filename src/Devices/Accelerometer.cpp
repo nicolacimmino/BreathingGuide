@@ -1,16 +1,15 @@
 
 #include "Accelerometer.h"
 
-void Accelerometer::begin(uint8_t pinXAxes, uint8_t pinYAxes, uint8_t pinZAxes,
-                          void (*onTilt)(uint8_t axis, bool positive) = NULL, void (*onShake)() = NULL, bool (*onRoll)(char *pattern) = NULL)
+void Accelerometer::begin(void (*onTilt)(uint8_t axis, bool positive) = NULL, void (*onShake)() = NULL, bool (*onRoll)(char *pattern) = NULL)
 {
-    this->pinAxes[X_AXIS] = pinXAxes;
-    this->pinAxes[Y_AXIS] = pinYAxes;
-    this->pinAxes[Z_AXIS] = pinZAxes;
-
-    pinMode(pinXAxes, INPUT);
-    pinMode(pinYAxes, INPUT);
-    pinMode(pinZAxes, INPUT);
+    this->mpu = new Adafruit_MPU6050();
+    
+    this->mpu->begin();
+    
+    this->mpu->setAccelerometerRange(MPU6050_RANGE_2_G);
+    this->mpu->setGyroRange(MPU6050_RANGE_500_DEG);
+    this->mpu->setFilterBandwidth(MPU6050_BAND_21_HZ);
 
     this->onTilt = onTilt;
     this->onShake = onShake;
@@ -83,7 +82,7 @@ void Accelerometer::senseAxisShakeMotion(uint8_t axis)
         return;
     }
 
-    int16_t acc = analogRead(this->pinAxes[axis]);
+    int16_t acc = this->getAxis(axis);
 
     if ((acc < this->calibationTableAxisShake[axis * 2] || acc > this->calibationTableAxisShake[1 + (axis * 2)]))
     {
@@ -124,13 +123,38 @@ int16_t Accelerometer::getAveragedZ()
 
 int16_t Accelerometer::getAxis(uint8_t axis)
 {
-    int16_t acc = analogRead(this->pinAxes[axis]);
+    sensors_event_t a, g, temp;
+    this->mpu->getEvent(&a, &g, &temp);
 
-    int16_t calMin = this->calibationTable[axis * 2];
-    int16_t calMax = this->calibationTable[(axis * 2) + 1];
+    float value = 0;
 
-    acc = min(acc, calMax);
-    acc = max(acc, calMin);
+    switch (axis)
+    {
+    case X_AXIS:
+        value = a.acceleration.y;
+        break;
+    case Y_AXIS:
+        value = a.acceleration.x;
+        break;
+    case Z_AXIS:
+        value = a.acceleration.z;
+        break;
+    }
 
-    return ((acc - calMin) / ((calMax - calMin) / 250.0)) - 127;
+    float calMin = this->calibationTable[axis * 2];
+    float calMax = this->calibationTable[(axis * 2) + 1];
+
+    float acc = min(value, calMax);
+    acc = max(value, calMin);
+
+    int16_t acceleration = ((acc - calMin) / ((calMax - calMin) / 250.0)) - 127;
+
+    Serial.print("X: ");
+    Serial.println(a.acceleration.x);
+    Serial.print("Y: ");
+    Serial.println(a.acceleration.y);
+    Serial.print("Z: ");
+    Serial.println(a.acceleration.z);
+
+    return acceleration;
 }

@@ -125,9 +125,6 @@ void setup()
     Serial.begin(115200);
     cli.begin(&Serial, &memoryController);
 
-    pinMode(PIN_BTN_C, OUTPUT);
-    digitalWrite(PIN_BTN_C, LOW);
-
     controlButton.begin(PIN_BTN_S, &onClick, &onLongPress);
 
     uint8_t ledPins[] = {PIN_LED_G0, PIN_LED_G1, PIN_LED_G2, PIN_LED_G3};
@@ -136,7 +133,7 @@ void setup()
     floodLight.begin();
     floodLight.setBrightness(controlButton.isButtonPressed() ? 50 : memoryController.getByte(MEMORY_GLOBAL_BRIGHTNESS_CAP));
     
-    accelerometer.begin(PIN_ACC_X, PIN_ACC_Y, PIN_ACC_Z, onTilt, onShake, onRoll);
+    accelerometer.begin(onTilt, onShake, onRoll);
 
     for (int ix = 0; ix < EXECUTORS_COUNT; ix++)
     {
