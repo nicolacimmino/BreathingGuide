@@ -30,17 +30,7 @@ public:
 private:
     Adafruit_MPU6050 *mpu;
     uint8_t axesStatus[3];
-    int16_t getAxis(uint8_t axis);
-    float calibationTable[6] = {
-        -9.4, +9.8, // X min, max
-        -10, +9.8, // Y min, max
-        -10.6, +8.7  // Z min, max
-    };
-    float calibationTableAxisShake[6] = {
-        -18.4, +18, // X min, max
-        -18, +18, // Y min, max
-        -18, +18  // Z min, max
-    };
+    int16_t getAxis(uint8_t axis);       
     int16_t averagedAxis[3] = {0, 0, 0};
     uint32_t movingAverageSampleTime = 0;
     uint32_t lastShakeTime = 0;

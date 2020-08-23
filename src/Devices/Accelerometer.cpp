@@ -84,7 +84,7 @@ void Accelerometer::senseAxisShakeMotion(uint8_t axis)
 
     int16_t acc = this->getAxis(axis);
 
-    if ((acc < this->calibationTableAxisShake[axis * 2] || acc > this->calibationTableAxisShake[1 + (axis * 2)]))
+    if (abs(acc) > 200)
     {
         this->onShake();
         this->lastShakeTime = millis();
@@ -128,10 +128,12 @@ int16_t Accelerometer::getAxis(uint8_t axis)
 
     float value = 0;
 
+    // The current HW iteration has the sensor rotated 90 degrees
+    // We swap here x and y rather than changing the reference axes in docs and/or code.
     switch (axis)
     {
     case X_AXIS:
-        value = a.acceleration.y;
+        value = -a.acceleration.y;
         break;
     case Y_AXIS:
         value = a.acceleration.x;
@@ -141,20 +143,7 @@ int16_t Accelerometer::getAxis(uint8_t axis)
         break;
     }
 
-    float calMin = this->calibationTable[axis * 2];
-    float calMax = this->calibationTable[(axis * 2) + 1];
-
-    float acc = min(value, calMax);
-    acc = max(value, calMin);
-
-    int16_t acceleration = ((acc - calMin) / ((calMax - calMin) / 250.0)) - 127;
-
-    Serial.print("X: ");
-    Serial.println(a.acceleration.x);
-    Serial.print("Y: ");
-    Serial.println(a.acceleration.y);
-    Serial.print("Z: ");
-    Serial.println(a.acceleration.z);
-
+    int16_t acceleration = (max(min(value, 19.6), -19.6)) * 13;
+    
     return acceleration;
 }
