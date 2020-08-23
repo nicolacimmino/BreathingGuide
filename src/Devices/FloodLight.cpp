@@ -38,10 +38,10 @@ void FloodLight::loop()
 {
     bool override = millis() < this->overrideUntil;
 
-    CRGB color0 = (override ? this->overrideColor[0] : this->colors[0])
+    CRGB color0 = CRGB((override ? this->overrideColor[0] : this->colors[0]))
                       .fadeLightBy(override ? this->overrideFade[0] : this->fade[0]);
 
-    CRGB color1 = (override ? this->overrideColor[1] : this->colors[1])
+    CRGB color1 = CRGB((override ? this->overrideColor[1] : this->colors[1]))
                       .fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
 
     this->leds[0] = color0;
