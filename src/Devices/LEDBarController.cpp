@@ -22,41 +22,24 @@ void LEDBarController::showBar(uint8_t value)
 
 void LEDBarController::setDim()
 {
-    this->luminosityPDM = LEDBAR_PDM_DIM;
+    this->luminosityPWM = LEDBAR_PWM_DIM;
 }
 
 void LEDBarController::setBright()
 {
-    this->luminosityPDM = LEDBAR_PDM_BRIGHT;
+    this->luminosityPWM = LEDBAR_PWM_BRIGHT;
 }
 
 void LEDBarController::setFullBrightness()
 {
-    this->luminosityPDM = LEDBAR_PDM_FULL;
+    this->luminosityPWM = LEDBAR_PWM_FULL;
 }
 
 void LEDBarController::loop()
 {
-    if (millis() - this->lastPDMPulseTime > this->luminosityPDM)
+    for (int ix = 0; ix < LEDBAR_NUM_LEDS; ix++)
     {
-        this->showPattern();
-        this->lastPDMPulseTime = millis();
+        analogWrite(this->ledPins[ix], this->pattern & (1 << ix) ? this->luminosityPWM : 0);
     }
 }
 
-void LEDBarController::showPattern()
-{
-    for (int ix = 0; ix < LEDBAR_NUM_LEDS; ix++)
-    {
-        digitalWrite(this->ledPins[ix], this->pattern & (1 << ix));
-    }
-
-    if(this->luminosityPDM == LEDBAR_PDM_FULL) {
-        return;
-    }
-
-    for (int ix = 0; ix < LEDBAR_NUM_LEDS; ix++)
-    {
-        digitalWrite(this->ledPins[ix], LOW);
-    }
-}
