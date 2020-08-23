@@ -20,7 +20,7 @@ public:
     void shutdown();
 
 private:
-    CRGB leds[2];
+    CRGB leds[5];
     uint8_t fade[2] = {0, 0};
     CRGB colors[2];
     CRGB overrideColor[2];
