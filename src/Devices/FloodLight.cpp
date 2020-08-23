@@ -38,18 +38,44 @@ void FloodLight::loop()
 {
     bool override = millis() < this->overrideUntil;
 
-    // TODO: refactor to calculate hue fade between lights, this is just a quick and dirty move to 5 lights
-    this->leds[0] = override ? this->overrideColor[0] : this->colors[0];
-    this->leds[0].fadeLightBy(override ? this->overrideFade[0] : this->fade[0]);
-    this->leds[1] = override ? this->overrideColor[0] : this->colors[0];
-    this->leds[1].fadeLightBy(override ? this->overrideFade[0] : this->fade[0]);
+    CRGB color0 = (override ? this->overrideColor[0] : this->colors[0]);
+    CRGB color1 = (override ? this->overrideColor[1] : this->colors[1]);
+    uint8_t fade0 = override ? this->overrideFade[0] : this->fade[0];
+    uint8_t fade1 = override ? this->overrideFade[1] : this->fade[1];
 
-    this->leds[2] = override ? this->overrideColor[1] : this->colors[1];
-    this->leds[2].fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
-    this->leds[3] = override ? this->overrideColor[1] : this->colors[1];
-    this->leds[3].fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
-    this->leds[4] = override ? this->overrideColor[1] : this->colors[1];
-    this->leds[4].fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
+    this->leds[0] = CRGB(color0);
+    this->leds[0].fadeLightBy(fade0);
+    this->leds[1] = CRGB(color0);
+    this->leds[1].fadeLightBy(fade0);
+
+    if (color0 == color1)
+    {
+        this->leds[2] = CRGB(color0);
+        this->leds[2].fadeLightBy(fade0);
+    }
+    else
+    {
+        this->leds[2] = CRGB((color0 + color1) / 2);
+        this->leds[2].fadeLightBy((fade0 + fade1) / 2);
+    }
+
+    this->leds[3] = CRGB(color1);
+    this->leds[3].fadeLightBy(fade1);
+    this->leds[4] = CRGB(color1);
+    this->leds[4].fadeLightBy(fade1);
+
+    // TODO: refactor to calculate hue fade between lights, this is just a quick and dirty move to 5 lights
+    // this->leds[0] = override ? this->overrideColor[0] : this->colors[0];
+    // this->leds[0].fadeLightBy(override ? this->overrideFade[0] : this->fade[0]);
+    // this->leds[1] = override ? this->overrideColor[0] : this->colors[0];
+    // this->leds[1].fadeLightBy(override ? this->overrideFade[0] : this->fade[0]);
+
+    // this->leds[2] = override ? this->overrideColor[1] : this->colors[1];
+    // this->leds[2].fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
+    // this->leds[3] = override ? this->overrideColor[1] : this->colors[1];
+    // this->leds[3].fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
+    // this->leds[4] = override ? this->overrideColor[1] : this->colors[1];
+    // this->leds[4].fadeLightBy(override ? this->overrideFade[1] : this->fade[1]);
 
     FastLED.show();
 }
