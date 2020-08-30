@@ -1,10 +1,8 @@
 #include "ControlButton.h"
 
-void ControlButton::begin(uint8_t pinButton, void (*onClick)(), void (*onLongPress)())
+void ControlButton::begin(uint8_t pinTouch, void (*onClick)(), void (*onLongPress)())
 {
-    this->pinButton = pinButton;
-
-    pinMode(pinButton, INPUT_PULLUP);
+    this->pinTouch = pinTouch;
 
     this->onClick = onClick;
     this->onLongPress = onLongPress;
@@ -12,7 +10,7 @@ void ControlButton::begin(uint8_t pinButton, void (*onClick)(), void (*onLongPre
 
 void ControlButton::loop()
 {
-    if (this->inhibitUntilReleased && digitalRead(this->pinButton) == 0)
+    if (this->inhibitUntilReleased && this->isButtonPressed())
     {
         return;
     }
@@ -24,27 +22,19 @@ void ControlButton::loop()
 
 void ControlButton::scanButton()
 {
-    if (digitalRead(this->pinButton) != 0)
+    if (!this->isButtonPressed())
     {
         return;
     }
-
-    // Allow the switch to stabilise.
-    byte debounce = 0x55;
-    while (debounce != 0x00)
-    {
-        debounce = (debounce << 1) | (digitalRead(this->pinButton) & 1);
-        delay(1);
-    }
-
+   
     // Wait for the switch to be released or a timeout of 500mS to expire.
     unsigned long initialTime = millis();
-    while ((millis() - initialTime < 500) && digitalRead(this->pinButton) == 0)
+    while ((millis() - initialTime < 500) && this->isButtonPressed())
     {
         delay(1);
     }
 
-    if (digitalRead(this->pinButton) == 0)
+    if (this->isButtonPressed())
     {
         if (this->onLongPress != NULL)
         {
@@ -62,6 +52,9 @@ void ControlButton::scanButton()
 }
 
 bool ControlButton::isButtonPressed()
-{
-    return digitalRead(this->pinButton) == LOW;
+{    
+    int touchSensor = ADCTouch.read(this->pinTouch);
+    return touchSensor > 650                        // When plugged in and touching
+     || (touchSensor < 100 && touchSensor > 40);     // Not pluggged touching     
 }
+
