@@ -6,6 +6,6 @@
 #define PIN_BTN_TOUCH A0
 #define PIN_LED_G0 5
 #define PIN_LED_G1 6
-#define PIN_LED_G2 9
-#define PIN_LED_G3 10
+#define PIN_LED_G2 10
+#define PIN_LED_G3 9
 

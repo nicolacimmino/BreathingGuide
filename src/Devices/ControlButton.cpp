@@ -26,7 +26,7 @@ void ControlButton::scanButton()
     {
         return;
     }
-   
+
     // Wait for the switch to be released or a timeout of 500mS to expire.
     unsigned long initialTime = millis();
     while ((millis() - initialTime < 500) && this->isButtonPressed())
@@ -52,9 +52,8 @@ void ControlButton::scanButton()
 }
 
 bool ControlButton::isButtonPressed()
-{    
+{
     int touchSensor = ADCTouch.read(this->pinTouch);
-    return touchSensor > 650                        // When plugged in and touching
-     || (touchSensor < 100 && touchSensor > 40);     // Not pluggged touching     
+    return touchSensor > 650                           // When plugged in and touching
+           || (touchSensor < 100 && touchSensor > 40); // Not pluggged touching
 }
-
