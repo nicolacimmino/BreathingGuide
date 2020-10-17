@@ -125,7 +125,7 @@ void setup()
     Serial.begin(115200);
     cli.begin(&Serial, &memoryController);
 
-    controlButton.begin(PIN_BTN_TOUCH, &onClick, &onLongPress);
+    controlButton.begin(PIN_BTN, &onClick, &onLongPress);
 
     uint8_t ledPins[] = {PIN_LED_G0, PIN_LED_G1, PIN_LED_G2, PIN_LED_G3};
     ledBarController.begin(ledPins);

@@ -1,11 +1,12 @@
 #include "ControlButton.h"
 
-void ControlButton::begin(uint8_t pinTouch, void (*onClick)(), void (*onLongPress)())
+void ControlButton::begin(uint8_t pinButton, void (*onClick)(), void (*onLongPress)())
 {
-    this->pinTouch = pinTouch;
-
+    this->pinButton = pinButton;    
     this->onClick = onClick;
     this->onLongPress = onLongPress;
+
+    pinMode(this->pinButton, INPUT_PULLUP);
 }
 
 void ControlButton::loop()
@@ -53,7 +54,5 @@ void ControlButton::scanButton()
 
 bool ControlButton::isButtonPressed()
 {
-    int touchSensor = ADCTouch.read(this->pinTouch);
-    return touchSensor > 650                           // When plugged in and touching
-           || (touchSensor < 100 && touchSensor > 40); // Not pluggged touching
+    return digitalRead(this->pinButton) == LOW;    
 }
