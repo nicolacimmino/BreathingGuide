@@ -22,13 +22,15 @@
 #include "src/Devices/FloodLight.h"
 #include "src/Devices/BatteryMonitor.h"
 
-#define EXECUTORS_COUNT 5
+#define EXECUTORS_COUNT 6
 #include "src/ModeExecutors/ModeExecutor.h"
 #include "src/ModeExecutors/SquareBreathModeExecutor.h"
 #include "src/ModeExecutors/AlternateNostrilBreathModeExecutor.h"
 #include "src/ModeExecutors/RainbowModeExecutor.h"
 #include "src/ModeExecutors/PomodoroModeExecutor.h"
 #include "src/ModeExecutors/NightlightModeExecutor.h"
+#include "src/ModeExecutors/DeskJobModeExecutor.h"
+
 #include "src/ModesChanger.h"
 #include "src/Devices/MemoryController.h"
 #include "src/BrightnessChanger.h"
@@ -45,7 +47,7 @@ MemoryController memoryController;
 Cli cli;
 
 uint8_t mode = 0;
-ModeExecutor *modeExecutors[] = {new SquareBreathModeExecutor(), new AlternateNostrilBreathModeExecutor(), new RainbowModeExecutor(), new PomodoroModeExecutor(), new NighlightModeExecutor()};
+ModeExecutor *modeExecutors[] = {new SquareBreathModeExecutor(), new AlternateNostrilBreathModeExecutor(), new RainbowModeExecutor(), new PomodoroModeExecutor(), new NighlightModeExecutor(), new DeskJobModeExecutor()};
 
 ModesChanger modesChanger;
 BrightnessChanger brightnessChanger;
