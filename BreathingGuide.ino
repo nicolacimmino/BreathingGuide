@@ -29,7 +29,8 @@
 #include "src/ModeExecutors/RainbowModeExecutor.h"
 #include "src/ModeExecutors/PomodoroModeExecutor.h"
 #include "src/ModeExecutors/NightlightModeExecutor.h"
-#include "src/ModeExecutors/DeskJobModeExecutor.h"
+//#include "src/ModeExecutors/DeskJobModeExecutor.h"
+#include "src/ModeExecutors/SleepBreathModeExecutor.h"
 
 #include "src/ModesChanger.h"
 #include "src/Devices/MemoryController.h"
@@ -47,7 +48,7 @@ MemoryController memoryController;
 Cli cli;
 
 uint8_t mode = 0;
-ModeExecutor *modeExecutors[] = {new SquareBreathModeExecutor(), new AlternateNostrilBreathModeExecutor(), new RainbowModeExecutor(), new PomodoroModeExecutor(), new NighlightModeExecutor(), new DeskJobModeExecutor()};
+ModeExecutor *modeExecutors[] = {new SleepBreathModeExecutor(), new SquareBreathModeExecutor(), new AlternateNostrilBreathModeExecutor(), new RainbowModeExecutor(), new PomodoroModeExecutor(), new NighlightModeExecutor()};
 
 ModesChanger modesChanger;
 BrightnessChanger brightnessChanger;
@@ -104,6 +105,14 @@ bool onRoll(char *pattern)
     return false;
 }
 
+void shutDown()
+{
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
+    sleep_mode();
+    sleep_disable();
+}
+
 void onLowBattery()
 {
     floodLight.override(300, CRGB::Red, 0);
@@ -115,10 +124,7 @@ void onBatteryCritical()
     floodLight.animateSync(CRGB::Red, CRGB::Black, 200, 10);
     floodLight.shutdown();
 
-    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-    sleep_enable();
-    sleep_mode();
-    sleep_disable();
+    shutDown();
 }
 
 void setup()
@@ -134,7 +140,7 @@ void setup()
 
     floodLight.begin();
     floodLight.setBrightness(controlButton.isButtonPressed() ? 50 : memoryController.getByte(MEMORY_GLOBAL_BRIGHTNESS_CAP));
-    
+
     accelerometer.begin(onTilt, onShake, onRoll);
 
     for (int ix = 0; ix < EXECUTORS_COUNT; ix++)
@@ -148,13 +154,13 @@ void setup()
     modesChanger.begin(modeExecutors, EXECUTORS_COUNT, &floodLight);
 
     if (controlButton.isButtonPressed())
-    {        
+    {
         brightnessChanger.begin(&floodLight, &memoryController, &accelerometer);
         while (controlButton.isButtonPressed())
         {
             //
         }
-    }    
+    }
 }
 
 void loop()
