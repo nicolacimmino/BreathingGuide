@@ -5,9 +5,9 @@ void SleepBreathModeExecutor::doLoop()
 {
     this->breatheFloodLight();
 
-    if (this->getTimeSinceModeChange() > 600000 /* 10 min */)
+    if (this->getTimeSinceModeChange() > 1200000 /* 20 min */)
     {
-        this->floodLight->setColor(CRGB::Black);
+        this->floodLight->shutdown();
 
         set_sleep_mode(SLEEP_MODE_PWR_DOWN);
         sleep_enable();
@@ -23,13 +23,13 @@ void SleepBreathModeExecutor::breatheFloodLight()
     uint8_t fade = 2 * abs(floor(127.0 * (effectiveSideDuration - cycleTime) / effectiveSideDuration));
     uint8_t fade2 = 255 - fade;
 
-    this->floodLight->setColor(CRGB::Green);
+    this->floodLight->setColor(cycleTime < effectiveSideDuration ? CRGB::Green : CRGB::Yellow);
     this->floodLight->setFade(fade);
 }
 
 unsigned long SleepBreathModeExecutor::getEffectiveSideDuration()
 {
-    uint8_t breathsPerMinute = max(5, 11 - floor(this->getTimeSinceModeChange() / 60000.0));
+    uint8_t breathsPerMinute = max(4, 11 - floor(this->getTimeSinceModeChange() / 60000.0) + offset);
 
     return 60000 / (2 * breathsPerMinute);
 }
@@ -60,4 +60,14 @@ void SleepBreathModeExecutor::doOnClick()
     }
 
     bool positive = this->accelerometer->getX() > 0;
+
+    if ((this->offset <= -5 && !positive) || (this->offset >= 5 && positive))
+    {
+        this->floodLight->override(300, positive ? CRGB::Black : CRGB::DarkRed, 127, !positive ? CRGB::Black : CRGB::DarkRed, 127);
+        return;
+    }
+
+    this->offset += positive ? 1 : -1;
+
+    this->floodLight->override(300, positive ? CRGB::Black : CRGB::DarkGreen, 127, !positive ? CRGB::Black : CRGB::DarkGreen, 127);
 }

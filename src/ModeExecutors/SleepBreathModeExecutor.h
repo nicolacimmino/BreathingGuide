@@ -19,6 +19,7 @@ protected:
 private:
     void breatheFloodLight();
     unsigned long getEffectiveSideDuration();
+    int8_t offset = 0;
 };
 
 #endif
